@@ -1,1 +1,27 @@
-HI 
+https://rb.gy/ilpkho
+=================================================
+#shell script to find sum of n numbers
+  
+echo "Enter Size(N)"
+read N
+
+i=1
+sum=0
+
+echo "Enter Numbers"
+while [ $i -le $N ]
+do
+  read num           #get number
+  sum=$((sum + num)) #sum+=num
+  i=$((i + 1))
+done
+
+echo $sum
+===================================================
+if [[ $num -eq 42 ]]
+then # if/then branch
+  echo 'num is actually equal to 42'
+else # else branch
+  echo 'num is not 42'
+fi
+====================================================
