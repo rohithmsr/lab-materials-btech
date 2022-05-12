@@ -1,0 +1,24 @@
+﻿~/.bashrc – contains scipts/vars to execute when the terminal/particular command is executed
+
+/etc/apt/apt.conf – you can change/edit proxy settings!
+
+Snap, wget, apt-get = various forms of installing packages
+
+snap = includes all the dependencies comnpressed in the file of the package you wanna install
+wget = downloading a package by downlaoding a file (usually a .sh file)
+apt-get = commonly used method to install packages !!!
+
+gedit = editing a file!! similar to notepad in Windows (use gedit instead of nano)
+EX: sudo gedit ~/.bashrc
+
+passeord hadoop = test1234
+
+su is one of the core utilities in Linux. It allows users to execute commands as another user.
+Ex: su – hadoop
+
+bin/hadoop illa, hadoop in su – haddop user!!
+
+till step-4 finished!! (REMINDER : stay in newuser hadoop)
+
+
+
