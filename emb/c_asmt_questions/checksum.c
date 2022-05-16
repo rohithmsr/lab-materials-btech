@@ -8,35 +8,54 @@
 void myDelay();
 void myTx(unsigned char x);
 void myTxBits(unsigned char x);
+unsigned int binAdditionWithCarry(unsigned int a,unsigned int b);
 
 unsigned char seg1;
 unsigned char seg2;
 unsigned char seg3;
-unsigned char csum;
+unsigned int csum;
 
 void main(){
-	// P1 = 0xFF;
 
-	// P1 = 0x01;
+	P1 = 0x03;
 	seg1 = P1;
 	myTxBits(P1);
 	myDelay();
 	
-	// P1 = 0x02;
+	P1 = 0x02;
 	seg2 = P1;
 	myTxBits(P1);
 	myDelay();
 	
-	// P1 = 0x04;
+	P1 = 0x03;
 	seg3 = P1;
 	myTxBits(P1);
 	myDelay();
 		
-	csum = seg1 + seg2 + seg3;
+	//csum = seg1 + seg2 + seg3;
+	//csum = ~csum;
+	//myTxBits(csum);
+	//myDelay();
+	
+	csum = binAdditionWithCarry(seg1, seg2);
+	csum = binAdditionWithCarry(csum, seg3);
 	csum = ~csum;
 	myTxBits(csum);
 	myDelay();
+}
 
+unsigned int binAdditionWithCarry(unsigned int a, unsigned int b)
+{
+    unsigned int c; //carry
+    while (b != 0) {
+        //find carry and shift it left
+        c = (a & b) << 1;
+			
+        //find the sum
+        a = a ^ b;
+        b = c;
+    }
+    return a + c;
 }
 
 void myTx(unsigned char x){
