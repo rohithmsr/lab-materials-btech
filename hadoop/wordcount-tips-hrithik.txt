@@ -1,0 +1,29 @@
+file system management using hadoop commands
+-> creating directories, moving normal files to hdfs, deleting files, ls, cat commands
+link - https://maelfabien.github.io/bigdata/HDFS_2/#
+
+
+wordcount
+1) go to hadoop directory in terminal(hadoop-3.3.2 or something)
+2) download text file to perform word count on using terminal command
+	wget https://norvig.com/big.txt
+3) put the downloaded big.txt to hdfs 
+	-> bin/hadoop -fs -mkdir inputDir   (create new dir)
+	-> bin/hadoop -fs put big.txt inputDir  (put big.txt to hdfs into inputDir)
+4) create a java file in the hadoop directory named WordCount.java
+5) copy the WordCount.java code from the link=> https://hadoop.apache.org/docs/r2.8.0/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html#Example:_WordCount_v1.0           and paste into the WordCount.java file.
+6) Check if the following environment variables are set(using echo $VARIABLE_NAME command, if not set them)
+	export JAVA_HOME=/lib/jvm/java-1.something  (or wherever java has been installed)
+	export PATH=${JAVA_HOME}/bin:${PATH}
+	export HADOOP_CLASSPATH=${JAVA_HOME}/lib/tools.jar
+7) Compile the WordCount.java 
+	bin/hadoop com.sun.tools.javac.Main WordCount.java
+(If unable to compile, just put the WordCount.class (attached) in the hadoop directory)\
+8) create a jar file using the compiled class file
+	jar cf wc.jar WordCount*.class             (if not working, try adding "bin/hadoop" at the beginning)
+9) Run:
+	bin/hadoop jar wc.jar WordCount inputDir outputDir
+(Make sure the big.txt file is inside the inputDir using bin/hadoop fs -ls inputDir command)	
+
+10) if 9) was successful, can check results using
+	bin/hadoop fs -cat outputDir/part-r-00000       (run in a separate terminal from hadoop directory, else output will make all previous commands go way up)
