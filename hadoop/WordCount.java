@@ -1,9 +1,9 @@
 import java.io.IOException;
-import java.util.StringTokenizer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -12,30 +12,25 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 public class WordCount {
-
-  public static class TokenizerMapper
-       extends Mapper<Object, Text, Text, IntWritable>{
-
-    private final static IntWritable one = new IntWritable(1);
+  // Map function
+  public static class MyMapper extends Mapper<LongWritable, Text, Text, IntWritable>{
     private Text word = new Text();
-
-    public void map(Object key, Text value, Context context
-                    ) throws IOException, InterruptedException {
-      StringTokenizer itr = new StringTokenizer(value.toString());
-      while (itr.hasMoreTokens()) {
-        word.set(itr.nextToken());
-        context.write(word, one);
-      }
+    public void map(LongWritable key, Text value, Context context) 
+           throws IOException, InterruptedException {
+      // Splitting the line on spaces
+      String[] stringArr = value.toString().split("\\s+");
+      for (String str : stringArr) {
+        word.set(str);
+        context.write(word, new IntWritable(1));
+      }           
     }
   }
-
-  public static class IntSumReducer
-       extends Reducer<Text,IntWritable,Text,IntWritable> {
+    
+  // Reduce function
+  public static class MyReducer extends Reducer<Text, IntWritable, Text, IntWritable>{        
     private IntWritable result = new IntWritable();
-
-    public void reduce(Text key, Iterable<IntWritable> values,
-                       Context context
-                       ) throws IOException, InterruptedException {
+    public void reduce(Text key, Iterable<IntWritable> values, Context context) 
+            throws IOException, InterruptedException {
       int sum = 0;
       for (IntWritable val : values) {
         sum += val.get();
@@ -44,14 +39,13 @@ public class WordCount {
       context.write(key, result);
     }
   }
-
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args)  throws Exception{
     Configuration conf = new Configuration();
-    Job job = Job.getInstance(conf, "word count");
+
+    Job job = Job.getInstance(conf, "WC");
     job.setJarByClass(WordCount.class);
-    job.setMapperClass(TokenizerMapper.class);
-    job.setCombinerClass(IntSumReducer.class);
-    job.setReducerClass(IntSumReducer.class);
+    job.setMapperClass(MyMapper.class);    
+    job.setReducerClass(MyReducer.class);
     job.setOutputKeyClass(Text.class);
     job.setOutputValueClass(IntWritable.class);
     FileInputFormat.addInputPath(job, new Path(args[0]));
